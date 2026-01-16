@@ -8,6 +8,7 @@ import {
   HttpCode,
   HttpStatus,
   Delete,
+  ValidationPipe,
 } from '@nestjs/common';
 import { CreateProfileDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
@@ -43,7 +44,7 @@ export class ProfilesController {
   @Put(':id')
   updateProfile(
     @Param('id') id: string,
-    @Body() updateProfileDto: UpdateProfileDto,
+    @Body(new ValidationPipe()) updateProfileDto: UpdateProfileDto,
   ) {
     return this.profileService.updateProfile(id, updateProfileDto);
   }

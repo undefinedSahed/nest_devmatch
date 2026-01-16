@@ -55,7 +55,7 @@ export class ProfilesService {
     const profileToEdit = this.profiles.find((profile) => profile.id === id);
 
     if (!profileToEdit) {
-      return null;
+      throw new NotFoundException(`Profile with id ${id} not found`);
     }
 
     if (updateProfileDto.name !== undefined) {

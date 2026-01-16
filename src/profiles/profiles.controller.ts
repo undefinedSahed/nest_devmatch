@@ -1,28 +1,42 @@
-import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  HttpCode,
+  HttpStatus,
+  Delete,
+} from '@nestjs/common';
 import { CreateProfileDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { ProfilesService } from './profiles.service';
 
 @Controller('profiles')
 export class ProfilesController {
+  constructor(private profileService: ProfilesService) {}
+
   // Get /profiles
   @Get()
-  findAll(@Query('age') age: number) {
-    return [{ age }];
+  findAll() {
+    return this.profileService.findAll();
   }
 
   // Get /profiles/id
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return [{ id }];
+  @HttpCode(HttpStatus.CREATED)
+  findOne(
+    @Param('id')
+    id: string,
+  ) {
+    return this.profileService.findOne(id);
   }
 
   // Post /profiles
   @Post()
   createProfile(@Body() createProfileDto: CreateProfileDto) {
-    return {
-      name: createProfileDto.name,
-      description: createProfileDto.description,
-    };
+    return this.profileService.createProfile(createProfileDto);
   }
 
   // Update /profile/:id
@@ -31,9 +45,13 @@ export class ProfilesController {
     @Param('id') id: string,
     @Body() updateProfileDto: UpdateProfileDto,
   ) {
-    return {
-      id,
-      ...updateProfileDto,
-    };
+    return this.profileService.updateProfile(id, updateProfileDto);
+  }
+
+  // Delete /profile/:id
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  remove(@Param('id') id: string) {
+    return this.profileService.deleteProfile(id);
   }
 }
